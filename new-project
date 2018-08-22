@@ -1,0 +1,7 @@
+#!/bin/sh
+
+name=${1:-test}
+description=${2:-$name}
+database=${3:-sqlite:db/trac.db}
+
+trac-admin "/var/trac/${name}" initenv "${description}" ${database}

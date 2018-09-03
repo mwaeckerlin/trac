@@ -6,6 +6,7 @@ fi
 
 ! test -d /tmp/plugins || rm -rf /tmp/plugins
 for p in ${TRAC_PLUGINS}; do
+    echo "**** install: $p"
     type=${p%%:*}
     url=${p#*:}
     mkdir /tmp/plugins

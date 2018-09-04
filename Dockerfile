@@ -2,11 +2,12 @@ FROM mwaeckerlin/ubuntu-base
 
 EXPOSE 8080
 
-ENV TRAC_PLUGINS     "http://www.agilofortrac.com/download/agilo-source-0.9.15-tar.gz \
+# 2018-08-23: current agilo 0.9.15 requires exactly trac 1.0.11, patched it to accept newer
+ENV TRAC_PACKAGES    "https://download.edgewall.org/trac/Trac-1.0.17.tar.gz \
+                      http://www.agilofortrac.com/download/agilo-source-0.9.15-tar.gz \
                       https://trac-hacks.org/svn/ldapplugin/0.12 \
                       https://trac-hacks.org/svn/timingandestimationplugin/branches/trac1.0-Permissions \
                       https://trac-hacks.org/svn/plantumlmacro/trunk \
-                      git:https://github.com/trac-hacks/trac-code-comments-plugin \
                       https://trac-hacks.org/svn/customfieldadminplugin/0.11 \
                       https://trac-hacks.org/svn/diavisviewplugin/1.0 \
                       https://trac-hacks.org/svn/graphvizplugin/branches/1.0 \
@@ -16,18 +17,21 @@ ENV TRAC_PLUGINS     "http://www.agilofortrac.com/download/agilo-source-0.9.15-t
                       https://trac-hacks.org/svn/masterticketsplugin/trunk \
                       https://trac-hacks.org/svn/tracwysiwygplugin/0.12"
 
+# ignored dependencies: javascript-common libjs-excanvas libjs-jquery
+#                       libjs-jquery-timepicker libjs-jquery-ui
+#                       python-git python-pygit2
 ENV TRAC_DEPENDS     "python-ldap python-psycopg2 python-mysqldb subversion git \
                       python-babel python-babel-localedata python-chardet python-docutils \
                       python-genshi python-olefile python-pil python-pkg-resources \
-                      python-pygments python-roman python-setuptools python-subversion \
-                      python-git python-pygit2 python-tz \
+                      python-pygments python-roman python-subversion python-setuptools \
+                      python-tz \
                       graphviz plantuml"
 
-# 2018-08-23: current agilo 0.9.15 requires exactly trac 1.0.11
-ENV TRAC_SRC         "https://download.edgewall.org/trac/Trac-1.0.11.tar.gz"
-ENV PYTHONPATH       "/opt/trac/lib/python2.7/site-packages"
+ENV PYTHON_PREFIX    "/opt/trac"
+ENV PYTHONPATH       "${PYTHON_PREFIX}/lib/python2.7/site-packages"
 ENV PYTHON_EGG_CACHE "/var/tmp/python-eggs"
-ENV PATH             "/opt/trac/bin:${PATH}"
+ENV PATH             "${PYTHON_PREFIX}/bin:${PATH}"
+ENV PY_INSTALL       "python /usr/lib/python2.7/dist-packages/easy_install.py --prefix=${PYTHON_PREFIX}"
 ENV TRAC_DATA        "/var/trac"
 ENV WWWUSER          "www-data"
 ENV WWWGROUP         "www-data"
@@ -37,17 +41,9 @@ RUN apt-get update \
  && apt-get upgrade -y \
  && apt-get install --no-install-recommends --no-install-suggests -qy ${TRAC_DEPENDS} wget \
  && mkdir -p ${TRAC_DATA} ${PYTHONPATH%%:*} ${PYTHON_EGG_CACHE} \
- && cd /tmp \
- && wget -qOtrac.tgz ${TRAC_SRC} \
- && tar xf trac.tgz \
- && cd Trac* \
- && python setup.py install --prefix=/opt/trac \
- && cd /tmp \
- && rm -rf * \
- && apt-get autoremove --purge -y trac wget \
+ && /install-plugins.sh \
  && ( test -e /var/www || mkdir /var/www ) \
- && chown -R ${WWWUSER}:${WWWGROUP} ${TRAC_DATA} ${PYTHON_EGG_CACHE} /var/www \
- && /install-plugins.sh
+ && chown -R ${WWWUSER}:${WWWGROUP} ${TRAC_DATA} ${PYTHON_EGG_CACHE} /var/www
 
 ADD new-project /usr/bin/new-project
 

@@ -3,6 +3,7 @@ FROM mwaeckerlin/ubuntu-base
 EXPOSE 8080
 
 # 2018-08-23: current agilo 0.9.15 requires exactly trac 1.0.11, patched it to accept newer
+# the first line must be trac in tar.gz-format
 ENV TRAC_PACKAGES    "https://download.edgewall.org/trac/Trac-1.0.17.tar.gz \
                       http://www.agilofortrac.com/download/agilo-source-0.9.15-tar.gz \
                       https://trac-hacks.org/svn/ldapplugin/0.12 \
@@ -42,6 +43,8 @@ RUN apt-get update \
  && apt-get install --no-install-recommends --no-install-suggests -qy ${TRAC_DEPENDS} wget \
  && mkdir -p ${TRAC_DATA} ${PYTHONPATH%%:*} ${PYTHON_EGG_CACHE} \
  && /install-plugins.sh \
+ && cd ${PYTHON_PREFIX} \
+ && wget -qO- ${TRAC_PACKAGES%% *} | tar xz --strip-components=1 --wildcards '*/contrib' \
  && ( test -e /var/www || mkdir /var/www ) \
  && chown -R ${WWWUSER}:${WWWGROUP} ${TRAC_DATA} ${PYTHON_EGG_CACHE} /var/www
 

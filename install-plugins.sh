@@ -14,6 +14,7 @@ for p in ${TRAC_PACKAGES}; do
         (http|https)
             case "$url" in
                 (*agilo*)
+                    # patch agilo it to accept newer trac versions
                     wget -qO- $type:$url | tar xz --strip-components=1
                     for f in setup.py agilo.egg-info/requires.txt; do
                         sed -i 's,trac == 1\.0\.11,trac >= 1.0.11,' $f

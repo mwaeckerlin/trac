@@ -9,6 +9,7 @@ ENV TRAC_PACKAGES    "https://download.edgewall.org/trac/Trac-1.0.17.tar.gz \
                       https://trac-hacks.org/svn/ldapplugin/0.12 \
                       https://trac-hacks.org/svn/timingandestimationplugin/branches/trac1.0-Permissions \
                       https://trac-hacks.org/svn/plantumlmacro/trunk \
+                      https://trac-hacks.org/svn/mscgenplugin/0.11 \
                       https://trac-hacks.org/svn/customfieldadminplugin/0.11 \
                       https://trac-hacks.org/svn/diavisviewplugin/1.0 \
                       https://trac-hacks.org/svn/graphvizplugin/branches/1.0 \
@@ -30,7 +31,7 @@ ENV TRAC_DEPENDS     "python-ldap python-psycopg2 python-mysqldb subversion git 
                       python-genshi python-olefile python-pil python-pkg-resources \
                       python-pygments python-roman python-subversion python-setuptools \
                       python-tz \
-                      graphviz plantuml"
+                      graphviz plantuml mscgen"
 
 ENV PYTHON_PREFIX    "/opt/trac"
 ENV PYTHONPATH       "${PYTHON_PREFIX}/lib/python2.7/site-packages"

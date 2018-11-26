@@ -21,6 +21,7 @@ ENV TRAC_PACKAGES    "https://download.edgewall.org/trac/Trac-1.0.17.tar.gz \
                       https://trac-hacks.org/svn/tractickettemplateplugin/1.0 \
                       https://trac-hacks.org/svn/tracformsplugin/trunk \
                       https://trac-hacks.org/svn/ticketcalendarplugin/0.12 \
+                      https://trac-hacks.org/svn/doxygenplugin/0.11 \
                       https://trac-hacks.org/svn/xmlrpcplugin/trunk"
 
 # ignored dependencies: javascript-common libjs-excanvas libjs-jquery
